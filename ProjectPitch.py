@@ -1,19 +1,21 @@
-#Libraries
-import RPi.GPIO as GPIO
-import time 
-import requests
-#Disable warnings (optional)
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
+#importing important Libraries
+import RPi.GPIO as GPIO    
+import time                 #importing time 
+import requests             #importing requests which is used to coomunicate over the internet
+
+GPIO.setmode(GPIO.BCM)      #Setting up the board to BCM mode
+GPIO.setwarnings(False)     #Disabling the warnings
 
 
+# allocating important pins 
+buzzer=23                   #Positive end of the buzzer connected to the pin 23        
+pir = 21                    #OUT pin of the PIR motion sensor connected to the pin 21
+trigger=15                  #Trigger pin of the HC-SR04 connected to the pin 15 
+echo=14                     #Echo pin of the HC-SR04 connected to the pin 15
+led=4                       # positive LED is connected to the pin 4 of raspberry pi 
 
-buzzer=23
-pir = 21
-trigger=15
-echo=14
-led=4
-GPIO.setup(trigger,GPIO.OUT)
+#defining the pins as input or output pins
+GPIO.setup(trigger,GPIO.OUT)        
 GPIO.setup(led,GPIO.OUT)
 GPIO.setup(echo,GPIO.IN)
 GPIO.setup(buzzer,GPIO.OUT)
@@ -23,7 +25,9 @@ GPIO.setup(pir,GPIO.IN)
 
 
 GPIO.output(buzzer,GPIO.LOW)
-def distCalc():
+
+#function to calculate the distance from the HC-SR04
+def distCalc():   
     GPIO.output(trigger,1)
     time.sleep(0.0001)
     GPIO.output(trigger,0)
@@ -36,9 +40,12 @@ def distCalc():
     
     dist=(end-start)*17000
     return dist
+
+#Firstly the LED is in OFF state 
 GPIO.output(led,GPIO.LOW)
 
 
+#the function for the buzzer
 def buzz(times):
     GPIO.output(buzzer,GPIO.HIGH)
     
@@ -46,6 +53,8 @@ def buzz(times):
     GPIO.output(buzzer,GPIO.LOW)
     
     time.sleep(times)
+    
+  #main loop which will always run infinitely until specified otherwise
 while True:
     
     dist=distCalc()
